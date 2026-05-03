@@ -1,0 +1,19 @@
+baseURL                = "https://demo.stack.cai.im/"
+languageCode           = "vi"
+title                  = "Hieneo"
+# Theme i18n support
+# See i18n folder for available languages
+defaultContentLanguage = "vi"
+# Set hasCJKLanguage to true if DefaultContentLanguage is a CJK language
+# This will make .Summary and .WordCount behave correctly
+hasCJKLanguage         = false
+
+[pagination]
+    pagerSize = 5
+
+[permalinks]
+    post = "/p/:slug/"
+    page = "/:slug/"
+
+[services.disqus]
+    shortname = "hugo-theme-stack"

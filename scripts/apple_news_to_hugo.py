@@ -25,7 +25,7 @@ from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from pathlib import Path
 from typing import Any
-from urllib.parse import urlparse
+from urllib.parse import quote_plus, urlparse
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 CONTENT_POST = REPO_ROOT / "content" / "post"
@@ -75,6 +75,129 @@ def _strip_html(raw: str) -> str:
     text = re.sub(r"<[^>]+>", " ", text)
     text = re.sub(r"\s+", " ", text).strip()
     return text
+
+
+def _fetch_url_text(url: str) -> str:
+    req = urllib.request.Request(
+        url,
+        headers={"User-Agent": "hieneo-apple-feed-sync/1.0 (+local; Hugo blog)"},
+    )
+    with urllib.request.urlopen(req, timeout=60) as resp:
+        return resp.read().decode("utf-8", errors="replace")
+
+
+def _extract_apple_release_notes_summary(html_text: str) -> str:
+    text = re.sub(r"(?s)<script[^>]*>.*?</script>", " ", html_text)
+    text = re.sub(r"(?s)<style[^>]*>.*?</style>", " ", text)
+    text = re.sub(r"<[^>]+>", "\n", text)
+    text = re.sub(r"\n{2,}", "\n\n", text).strip()
+
+    paragraphs = [p.strip() for p in text.split("\n\n") if p.strip()]
+    candidates = [p for p in paragraphs if 80 < len(p) < 600]
+
+    if not candidates and paragraphs:
+        candidates = [paragraphs[0]]
+
+    if not candidates:
+        return ""
+
+    scored = []
+    for p in candidates:
+        score = 0
+        lower = p.lower()
+        if "xcode" in lower:
+            score += 2
+        if "release" in lower or "note" in lower:
+            score += 1
+        if "beta" in lower or "sdk" in lower or "issue" in lower:
+            score += 1
+        scored.append((score, p))
+
+    scored.sort(key=lambda item: (-item[0], len(item[1])))
+    best = [p for _, p in scored[:3]]
+    return "\n\n".join(best).strip()
+
+
+def _fetch_github_issues(title: str) -> str:
+    token = os.environ.get("GITHUB_TOKEN", "").strip()
+    repo_filter = os.environ.get("GITHUB_ISSUE_REPO", "").strip()
+    label_text = os.environ.get("GITHUB_ISSUE_LABELS", "").strip()
+
+    query = title
+    if repo_filter:
+        query += f" repo:{repo_filter}"
+    query += " is:issue"
+
+    if label_text:
+        for label in [label.strip() for label in label_text.split(",") if label.strip()]:
+            query += f" label:{label}"
+
+    url = (
+        "https://api.github.com/search/issues?"
+        f"q={quote_plus(query)}&sort=updated&order=desc&per_page=5"
+    )
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": "hieneo-apple-feed-sync/1.0",
+            "Accept": "application/vnd.github+json",
+        },
+    )
+    if token:
+        req.add_header("Authorization", f"Bearer {token}")
+
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            data = json.load(resp)
+    except Exception:
+        return ""
+
+    items = data.get("items", [])[:5]
+    if not items:
+        return ""
+
+    lines = []
+    for item in items:
+        title_text = item.get("title", "").strip()
+        link = item.get("html_url", "").strip()
+        if title_text and link:
+            lines.append(f"- [{title_text}]({link})")
+    return "\n".join(lines)
+
+
+def _fetch_stackoverflow_questions(title: str) -> str:
+    key = os.environ.get("STACK_EXCHANGE_KEY", "").strip()
+    url = (
+        "https://api.stackexchange.com/2.3/search/advanced"
+        f"?site=stackoverflow&order=desc&sort=relevance&pagesize=3&title={quote_plus(title)}"
+    )
+    if key:
+        url += f"&key={quote_plus(key)}"
+
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": "hieneo-apple-feed-sync/1.0",
+            "Accept": "application/json",
+        },
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            data = json.load(resp)
+    except Exception:
+        return ""
+
+    items = data.get("items", [])[:3]
+    if not items:
+        return ""
+
+    lines = []
+    for item in items:
+        title_text = item.get("title", "").strip()
+        link = item.get("link", "").strip()
+        if title_text and link:
+            lines.append(f"- [{title_text}]({link})")
+    return "\n".join(lines)
 
 
 def _parse_pub_date(pub: str | None) -> datetime:
@@ -172,42 +295,90 @@ def _build_markdown(kind: str, item: dict[str, Any]) -> str:
     if len(excerpt) > 300:
         excerpt = excerpt[:297] + "…"
 
-    extra_link = ""
+    rn = None
     if kind == "xcode":
-        rn = None
         enc = item.get("encoded") or ""
-        for m in re.finditer(r'href=(["\']?)([^"\'>\s]+)\1', enc):
+        for m in re.finditer(r'href=("[\']?)([^"\'>\s]+)\1', enc):
             href = m.group(2)
             if "xcode" in href.lower() and "-rn" in href.lower():
                 rn = _absolutize_apple_href(href)
                 break
-        if rn:
-            extra_link = f"\n- [Release notes (Apple)]({rn})"
+
+    release_notes_summary = ""
+    if rn:
+        try:
+            html_text = _fetch_url_text(rn)
+            release_notes_summary = _extract_apple_release_notes_summary(html_text)
+        except Exception:
+            release_notes_summary = ""
+
+    github_issues = _fetch_github_issues(title)
+    stackoverflow_questions = _fetch_stackoverflow_questions(title)
 
     if kind == "xcode":
         tags = "    - Xcode\n    - Apple\n    - release-notes\n    - apple-rss"
-        desc_ym = f"Bản Xcode mới trên Apple Developer Releases — {title}. Xem link chính thức và release notes bên dưới."
+        desc_ym = (
+            f"Bản Xcode mới trên Apple Developer Releases — {title}. "
+            "Xem link chính thức và release notes bên dưới."
+        )
     else:
         tags = "    - App Store\n    - Apple\n    - policy\n    - apple-rss"
-        desc_ym = f"Cập nhật chính sách / thỏa thuận từ Apple Developer News — {title}. Đọc toàn văn trên trang Apple."
+        desc_ym = (
+            f"Cập nhật chính sách / thỏa thuận từ Apple Developer News — {title}. "
+            "Đọc toàn văn trên trang Apple."
+        )
 
     draft = os.environ.get("APPLE_POST_DRAFT", "").lower() in ("1", "true", "yes")
     draft_line = "draft: true\n" if draft else ""
 
-    body = f"""Apple đăng thông báo sau (RSS). Đây là bản ghi tự động — bạn có thể bổ sung phân tích tiếng Việt phía dưới.
+    body = f"""Apple vừa đăng thông báo sau qua RSS. Đây là bản ghi tự động bằng tiếng Việt, giữ lại một số từ tiếng Anh phổ biến cho developer.
 
-- [Xem bài gốc trên Apple Developer]({link}){extra_link}
+- [Xem bài gốc trên Apple Developer]({link})
+"""
+    if rn:
+        body += f"- [Release notes (Apple)]({rn})\n"
+
+    body += f"""
 
 <!--more-->
 
 ## Tóm tắt nhanh
 
 **Tiêu đề (EN):** {title}
-
 **Ngày (theo RSS):** {item.get("pubDate") or "—"}
-
 **Trích đoạn:** {excerpt or "—"}
+
+## Tổng quan
+
+Apple vừa có thông báo mới liên quan đến {'Xcode' if kind == 'xcode' else 'chính sách App Store / thỏa thuận'}. Dưới đây là tóm tắt quan trọng dựa trên release notes và một số nguồn cộng đồng.
+
 """
+
+    if release_notes_summary:
+        body += f"## Tóm tắt release notes\n\n{release_notes_summary}\n\n"
+    else:
+        body += (
+            "## Tóm tắt release notes\n\n"
+            "Chưa lấy được nội dung release notes tự động. Có thể bổ sung thêm khi page rõ hơn.\n\n"
+        )
+
+    body += "## Vấn đề cộng đồng\n\n"
+    if github_issues:
+        body += "### GitHub\n\n" + github_issues + "\n\n"
+    else:
+        body += "- Chưa tìm thấy issue GitHub liên quan.\n\n"
+
+    if stackoverflow_questions:
+        body += "### Stack Overflow\n\n" + stackoverflow_questions + "\n\n"
+    else:
+        body += "- Chưa tìm thấy câu hỏi Stack Overflow phù hợp.\n\n"
+
+    body += """## Ghi chú
+
+- Bài viết này được tạo tự động từ RSS.
+- Bạn có thể bổ sung thêm phân tích chi tiết, bug / issue, và ảnh hưởng tới developer.
+"""
+
     return f"""---
 title: "{_yaml_escape(title)}"
 date: {date_str}
@@ -217,7 +388,6 @@ categories:
 tags:
 {tags}
 {draft_line}---
-
 {body}
 """
 

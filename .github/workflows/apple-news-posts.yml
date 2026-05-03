@@ -24,6 +24,10 @@ jobs:
 
       - name: Quét RSS và tạo bài
         run: python3 scripts/apple_news_to_hugo.py
+        env:
+          GITHUB_ISSUE_REPO: "apple/swift"
+          GITHUB_ISSUE_LABELS: "bug,regression"
+          STACK_EXCHANGE_KEY: ${{ secrets.STACK_EXCHANGE_KEY }}
 
       - name: Commit và push nếu có thay đổi
         run: |

@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
     <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Mỗi mùa Xcode và iOS mới, Apple ghi rất nhiều thay đổi — mình chọn cách đọc lường trước thay vì đợi build đỏ mới quay lại tìm.">
-<title>Release notes và lịch nâng cấp SDK: thứ dễ lười mà dễ hại</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Bản Xcode mới trên Apple Developer Releases — Xcode 26.5 beta 3 (17F5032f). Xem link chính thức và release notes bên dưới.">
+<title>Xcode 26.5 beta 3 (17F5032f)</title>
 
 
-<link rel="canonical" href="http://localhost:1313/p/release-notes-v%C3%A0-l%E1%BB%8Bch-n%C3%A2ng-c%E1%BA%A5p-sdk-th%E1%BB%A9-d%E1%BB%85-l%C6%B0%E1%BB%9Di-m%C3%A0-d%E1%BB%85-h%E1%BA%A1i/">
+<link rel="canonical" href="http://localhost:1313/p/xcode-26.5-beta-3-17f5032f/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap">
 
 
-<link rel="stylesheet" href="/scss/style.min.389e156f5e9bb13df5a924cfa99dfb9c39f3e01e68d9e146cd65bdae963be145.css"><meta property='og:title' content="Release notes và lịch nâng cấp SDK: thứ dễ lười mà dễ hại">
-<meta property='og:description' content="Mỗi mùa Xcode và iOS mới, Apple ghi rất nhiều thay đổi — mình chọn cách đọc lường trước thay vì đợi build đỏ mới quay lại tìm.">
-<meta property='og:url' content='http://localhost:1313/p/release-notes-v%C3%A0-l%E1%BB%8Bch-n%C3%A2ng-c%E1%BA%A5p-sdk-th%E1%BB%A9-d%E1%BB%85-l%C6%B0%E1%BB%9Di-m%C3%A0-d%E1%BB%85-h%E1%BA%A1i/'>
+<link rel="stylesheet" href="/scss/style.min.389e156f5e9bb13df5a924cfa99dfb9c39f3e01e68d9e146cd65bdae963be145.css"><meta property='og:title' content="Xcode 26.5 beta 3 (17F5032f)">
+<meta property='og:description' content="Bản Xcode mới trên Apple Developer Releases — Xcode 26.5 beta 3 (17F5032f). Xem link chính thức và release notes bên dưới.">
+<meta property='og:url' content='http://localhost:1313/p/xcode-26.5-beta-3-17f5032f/'>
 <meta property='og:site_name' content='Hieneo'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='iOS' /><meta property='article:tag' content='Xcode' /><meta property='article:tag' content='release-notes' /><meta property='article:published_time' content='2026-04-05T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2026-04-05T00:00:00&#43;00:00'/>
-<meta name="twitter:title" content="Release notes và lịch nâng cấp SDK: thứ dễ lười mà dễ hại">
-<meta name="twitter:description" content="Mỗi mùa Xcode và iOS mới, Apple ghi rất nhiều thay đổi — mình chọn cách đọc lường trước thay vì đợi build đỏ mới quay lại tìm.">
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='Xcode' /><meta property='article:tag' content='Apple' /><meta property='article:tag' content='release-notes' /><meta property='article:tag' content='apple-rss' /><meta property='article:published_time' content='2026-04-27T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2026-04-27T00:00:00&#43;00:00'/>
+<meta name="twitter:title" content="Xcode 26.5 beta 3 (17F5032f)">
+<meta name="twitter:description" content="Bản Xcode mới trên Apple Developer Releases — Xcode 26.5 beta 3 (17F5032f). Xem link chính thức và release notes bên dưới.">
     <link rel="shortcut icon" href="/img/avatar.jpg" />
 
     </head>
@@ -275,9 +275,7 @@
             <nav class="toc-nav" id="TableOfContents">
                 
   <ol>
-    <li><a href="#mình-đọc-gì-trước">Mình đọc gì trước</a></li>
-    <li><a href="#lịch-nâng-cấp-trong-đầu">Lịch nâng cấp trong đầu</a></li>
-    <li><a href="#kết">Kết</a></li>
+    <li><a href="#tóm-tắt-nhanh">Tóm tắt nhanh</a></li>
   </ol>
 
             </nav>
@@ -309,12 +307,12 @@
 
     <div class="article-title-wrapper">
         <h2 class="article-title">
-            <a href="/p/release-notes-v%C3%A0-l%E1%BB%8Bch-n%C3%A2ng-c%E1%BA%A5p-sdk-th%E1%BB%A9-d%E1%BB%85-l%C6%B0%E1%BB%9Di-m%C3%A0-d%E1%BB%85-h%E1%BA%A1i/">Release notes và lịch nâng cấp SDK: thứ dễ lười mà dễ hại</a>
+            <a href="/p/xcode-26.5-beta-3-17f5032f/">Xcode 26.5 beta 3 (17F5032f)</a>
         </h2>
     
         
         <h3 class="article-subtitle">
-            Mỗi mùa Xcode và iOS mới, Apple ghi rất nhiều thay đổi — mình chọn cách đọc lường trước thay vì đợi build đỏ mới quay lại tìm.
+            Bản Xcode mới trên Apple Developer Releases — Xcode 26.5 beta 3 (17F5032f). Xem link chính thức và release notes bên dưới.
         </h3>
         
     </div>
@@ -339,7 +337,7 @@
   <path d="M3 11h16" />
   <path d="M18 16.496v1.504l1 1" />
 </svg>
-                    <time class="article-time--published" datetime='2026-04-05T00:00:00Z'>Chủ Nhật, 5 tháng 4, 2026</time>
+                    <time class="article-time--published" datetime='2026-04-27T00:00:00Z'>Thứ Hai, 27 tháng 4, 2026</time>
                 
 
                 
@@ -352,7 +350,7 @@
 
 
                     <time class="article-time--reading">
-                        2 phút đọc
+                        1 phút đọc
                     </time>
                 
             </div>
@@ -379,9 +377,7 @@
             <nav class="toc-nav">
                 
   <ol>
-    <li><a href="#mình-đọc-gì-trước">Mình đọc gì trước</a></li>
-    <li><a href="#lịch-nâng-cấp-trong-đầu">Lịch nâng cấp trong đầu</a></li>
-    <li><a href="#kết">Kết</a></li>
+    <li><a href="#tóm-tắt-nhanh">Tóm tắt nhanh</a></li>
   </ol>
 
             </nav>
@@ -392,20 +388,17 @@
     <section class="article-content">
     
     
-    <p>Mình từng có giai đoạn chỉ cập nhật <strong>deployment target</strong> hoặc <strong>Swift</strong> khi CI gãy hoặc App Store báo lỗi. Làm vậy chạy được, nhưng hay dính kiểu “sửa cho qua” — mất thời gian hơn là đọc trước vài trang release notes.</p>
-<h2 id="mình-đọc-gì-trước">Mình đọc gì trước
-</h2><p>Khi có bản <strong>Xcode / iOS SDK</strong> mới, mình ưu tiên:</p>
-<ol>
-<li><strong>Phần Deprecated và Removed</strong> — chỗ này hay gắn trực tiếp với warning hoặc crash lúc runtime.</li>
-<li><strong>Thay đổi liên quan API mình đang dùng</strong> — tìm theo tên framework (UIKit, SwiftUI, Foundation…) thay vì đọc từ đầu đến cuối.</li>
-<li><strong>Ghi chú build / linker</strong> — đôi khi chỉ một cờ biên dịch mới là đủ làm team kẹt nửa buổi.</li>
-</ol>
-<p>Không cần thuộc hết; chỉ cần <strong>đánh dấu chỗ có khả năng đụng tới code của dự án</strong>.</p>
-<h2 id="lịch-nâng-cấp-trong-đầu">Lịch nâng cấp trong đầu
-</h2><p>Mình thích tách hai việc: <strong>nâng công cụ</strong> (Xcode, Swift) và <strong>nâng yêu cầu hệ điều hành tối thiểu</strong> của app. Hai thứ này không phải lúc nào cũng đi cùng nhau; gộp một lần cho nhanh dễ khiến PR phình to và khó review.</p>
-<p>Một mốc đơn giản mình hay dùng: sau khi đọc xong phần “gai” trong notes, mình <strong>ghi một dòng vào backlog</strong> (hoặc issue nội bộ) — “đã rà soát iOS xx / Xcode yy, chưa thấy điểm chạm: …”. Sau này ai hỏi “sao lúc đó không biết API này đổi?” còn có chỗ trả lời.</p>
-<h2 id="kết">Kết
-</h2><p>Release notes tẻ nhạt, nhưng là <strong>bản đồ miễn phí</strong> do Apple phát. Bỏ qua được vài bản, nhưng bỏ quen thì mỗi lần nâng cấp lại giống như mò mẫm trong tối — trong khi đèn vốn đã bật sẵn.</p>
+    <p>Apple đăng thông báo sau (RSS). Đây là bản ghi tự động — bạn có thể bổ sung phân tích tiếng Việt phía dưới.</p>
+<ul>
+<li><a class="link" href="https://developer.apple.com/news/releases/?id=04272026g"  target="_blank" rel="noopener"
+    >Xem bài gốc trên Apple Developer</a></li>
+<li><a class="link" href="https://developer.apple.com/go/?id=xcode-26_5-sdk-rn"  target="_blank" rel="noopener"
+    >Release notes (Apple)</a></li>
+</ul>
+<h2 id="tóm-tắt-nhanh">Tóm tắt nhanh
+</h2><p><strong>Tiêu đề (EN):</strong> Xcode 26.5 beta 3 (17F5032f)</p>
+<p><strong>Ngày (theo RSS):</strong> Mon, 27 Apr 2026 10:00:00 PDT</p>
+<p><strong>Trích đoạn:</strong> View downloadsView release notes View downloads View release notes</p>
 </section>
 
 
@@ -413,11 +406,13 @@
     
     <section class="article-tags">
         
-            <a href="/tags/ios/">IOS</a>
-        
             <a href="/tags/xcode/">Xcode</a>
         
+            <a href="/tags/apple/">Apple</a>
+        
             <a href="/tags/release-notes/">Release-Notes</a>
+        
+            <a href="/tags/apple-rss/">Apple-Rss</a>
         
     </section>
 
@@ -452,17 +447,6 @@
             
                 
 <article class="">
-    <a href="/p/xcode-26.5-beta-3-17f5032f/">
-        
-
-        <div class="article-details">
-            <h2 class="article-title">Xcode 26.5 beta 3 (17F5032f)</h2>
-        </div>
-    </a>
-</article>
-            
-                
-<article class="">
     <a href="/p/xcode-26.4.1-17e202/">
         
 
@@ -479,6 +463,17 @@
 
         <div class="article-details">
             <h2 class="article-title">Xcode 26.4 có gì mới? (Tóm tắt cho dev iOS)</h2>
+        </div>
+    </a>
+</article>
+            
+                
+<article class="">
+    <a href="/p/release-notes-v%C3%A0-l%E1%BB%8Bch-n%C3%A2ng-c%E1%BA%A5p-sdk-th%E1%BB%A9-d%E1%BB%85-l%C6%B0%E1%BB%9Di-m%C3%A0-d%E1%BB%85-h%E1%BA%A1i/">
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Release notes và lịch nâng cấp SDK: thứ dễ lười mà dễ hại</h2>
         </div>
     </a>
 </article>
